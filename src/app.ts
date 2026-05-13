@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
-app.use('/api/receipts', receiptRoutes);
+app.use('/api', receiptRoutes);
 
 // Serve Frontend (static files)
 const frontendPath = path.join(__dirname, '../../frontend');
@@ -29,6 +29,10 @@ app.get('/create', (req, res) => {
 
 app.get('/detail/:id', (req, res) => {
   res.sendFile(path.join(frontendPath, 'pages', 'detail.html'));
+});
+
+app.get('/danh-muc', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'pages', 'danh-muc.html'));
 });
 
 export default app;

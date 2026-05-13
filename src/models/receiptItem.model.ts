@@ -1,26 +1,28 @@
 import pool from '../config/db';
-import { IReceiptItem } from '../interfaces/receipt.interface';
+import { IChiTietPhieuNhap } from '../interfaces/receipt.interface';
 
-export class ReceiptItemModel {
-  // Thêm nhiều dòng hàng vào phiếu nhập kho
-  static async createMany(receiptId: number, items: IReceiptItem[]): Promise<IReceiptItem[]> {
-    const createdItems: IReceiptItem[] = [];
+export class ChiTietPhieuNhapModel {
+  // Thêm nhiều dòng chi tiết vào phiếu nhập kho
+  static async createMany(phieuNhapId: number, items: IChiTietPhieuNhap[]): Promise<IChiTietPhieuNhap[]> {
+    const createdItems: IChiTietPhieuNhap[] = [];
 
     for (const item of items) {
       const query = `
-        INSERT INTO receipt_items (receipt_id, product_name, product_code, unit, quantity, unit_price, total_price, notes)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO chi_tiet_phieu_nhap (
+          phieu_nhap_id, hang_hoa_id, stt,
+          so_luong_chung_tu, so_luong_thuc_nhap,
+          don_gia, thanh_tien
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *
       `;
       const values = [
-        receiptId,
-        item.product_name,
-        item.product_code || null,
-        item.unit,
-        item.quantity,
-        item.unit_price,
-        item.total_price,
-        item.notes || null,
+        phieuNhapId,
+        item.hang_hoa_id,
+        item.stt,
+        item.so_luong_chung_tu || 0,
+        item.so_luong_thuc_nhap || 0,
+        item.don_gia || 0,
+        item.thanh_tien || 0,
       ];
       const result = await pool.query(query, values);
       createdItems.push(result.rows[0]);
@@ -29,20 +31,23 @@ export class ReceiptItemModel {
     return createdItems;
   }
 
-  // Lấy danh sách hàng theo receipt_id
-  static async findByReceiptId(receiptId: number): Promise<IReceiptItem[]> {
+  // Lấy danh sách chi tiết theo phieu_nhap_id (kèm thông tin hàng hóa)
+  static async findByPhieuNhapId(phieuNhapId: number): Promise<IChiTietPhieuNhap[]> {
     const query = `
-      SELECT * FROM receipt_items 
-      WHERE receipt_id = $1 
-      ORDER BY id ASC
+      SELECT ct.*,
+        h.ten_hang, h.ma_so, h.don_vi_tinh,
+        h.nhan_hieu, h.quy_cach_pham_chat
+      FROM chi_tiet_phieu_nhap ct
+      JOIN hang_hoa h ON ct.hang_hoa_id = h.id
+      WHERE ct.phieu_nhap_id = $1
+      ORDER BY ct.stt ASC
     `;
-    const result = await pool.query(query, [receiptId]);
+    const result = await pool.query(query, [phieuNhapId]);
     return result.rows;
   }
 
-  // Xóa tất cả items theo receipt_id
-  static async deleteByReceiptId(receiptId: number): Promise<void> {
-    const query = `DELETE FROM receipt_items WHERE receipt_id = $1`;
-    await pool.query(query, [receiptId]);
+  // Xóa tất cả chi tiết theo phieu_nhap_id
+  static async deleteByPhieuNhapId(phieuNhapId: number): Promise<void> {
+    await pool.query('DELETE FROM chi_tiet_phieu_nhap WHERE phieu_nhap_id = $1', [phieuNhapId]);
   }
 }
