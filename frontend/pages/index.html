@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hệ thống quản lý tồn kho - Phiếu nhập kho Mẫu 01-VT">
+  <title>Quản lý Tồn kho - Danh sách Phiếu Nhập Kho</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <div class="logo-icon">📦</div>
+        <div>
+          <div class="brand-text">VIMES Warehouse</div>
+          <div class="brand-sub">Quản lý tồn kho</div>
+        </div>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="/" class="active">📋 Danh sách</a></li>
+        <li><a href="/create">➕ Tạo phiếu</a></li>
+        <li><a href="/danh-muc">📂 Danh mục</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>Phiếu Nhập Kho (Mẫu 01-VT)</h1>
+      <p>Quản lý tất cả phiếu nhập kho của đơn vị</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📦</div>
+        <div class="stat-info">
+          <h3 id="statTotal">0</h3>
+          <p>Tổng phiếu</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">📝</div>
+        <div class="stat-info">
+          <h3 id="statNhap">0</h3>
+          <p>Mới nhập</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon emerald">✅</div>
+        <div class="stat-info">
+          <h3 id="statDuyet">0</h3>
+          <p>Đã duyệt</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="card">
+      <div class="card-header">
+        <h2>📋 Phiếu nhập kho</h2>
+        <div class="action-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Tìm theo số phiếu, đơn vị, kho...">
+          </div>
+          <a href="/create" class="btn btn-primary">➕ Tạo phiếu mới</a>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table id="receiptsTable">
+          <thead>
+            <tr>
+              <th>Số phiếu</th>
+              <th>Ngày lập</th>
+              <th>Đơn vị</th>
+              <th>Nhập tại kho</th>
+              <th>Nợ / Có</th>
+              <th>Tổng tiền</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="receiptsBody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">📭</div>
+        <h3>Chưa có phiếu nhập kho</h3>
+        <p>Hãy tạo phiếu nhập kho đầu tiên theo Mẫu 01-VT</p>
+        <a href="/create" class="btn btn-primary">➕ Tạo phiếu mới</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-backdrop" id="deleteModal">
+    <div class="modal">
+      <h3>⚠️ Xác nhận xóa</h3>
+      <p>Bạn có chắc chắn muốn xóa phiếu nhập kho này? Hành động này không thể hoàn tác.</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeDeleteModal()">Hủy</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/index.js"></script>
+</body>
+</html>

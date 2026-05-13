@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạo Phiếu Nhập Kho - Mẫu 01-VT</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <div class="logo-icon">📦</div>
+        <div><div class="brand-text">VIMES Warehouse</div><div class="brand-sub">Quản lý tồn kho</div></div>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="/">📋 Danh sách</a></li>
+        <li><a href="/create" class="active">➕ Tạo phiếu</a></li>
+        <li><a href="/danh-muc">📂 Danh mục</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Tạo Phiếu Nhập Kho</h1>
+      <p>Phiếu nhập kho theo Mẫu 01-VT — Điền thông tin để tạo phiếu mới</p>
+    </div>
+
+    <form id="receiptForm">
+      <!-- Thông tin đơn vị & phiếu -->
+      <div class="card">
+        <div class="card-header"><h2>🏢 Thông tin đơn vị & phiếu</h2></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Đơn vị <span class="required">*</span></label>
+              <select class="form-control" id="donViId" required>
+                <option value="">-- Chọn đơn vị --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày lập <span class="required">*</span></label>
+              <input type="date" class="form-control" id="ngayLap" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nợ (TK)</label>
+              <input type="text" class="form-control" id="tkNo" placeholder="VD: 152, 153, 156...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Có (TK)</label>
+              <input type="text" class="form-control" id="tkCo" placeholder="VD: 331, 111, 112...">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thông tin giao nhận -->
+      <div class="card">
+        <div class="card-header"><h2>📝 Thông tin giao nhận</h2></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nhập tại kho</label>
+              <input type="text" class="form-control" id="nhapTaiKho" placeholder="Tên kho nhập">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Địa điểm</label>
+              <input type="text" class="form-control" id="diaDiem" placeholder="Địa điểm nhập kho">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Số chứng từ</label>
+              <input type="text" class="form-control" id="chungTuSo" placeholder="Số hóa đơn, chứng từ">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày chứng từ</label>
+              <input type="date" class="form-control" id="ngayChungTu">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Người ký -->
+      <div class="card">
+        <div class="card-header"><h2>✍️ Người ký phiếu</h2></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Người lập phiếu</label>
+              <select class="form-control" id="nguoiLapId">
+                <option value="">-- Chọn --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Người giao hàng</label>
+              <select class="form-control" id="nguoiGiaoId">
+                <option value="">-- Chọn --</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Thủ kho</label>
+              <select class="form-control" id="thuKhoId">
+                <option value="">-- Chọn --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kế toán trưởng</label>
+              <select class="form-control" id="keToanId">
+                <option value="">-- Chọn --</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chi tiết hàng hóa -->
+      <div class="card">
+        <div class="card-header">
+          <h2>📦 Chi tiết hàng hóa nhập kho</h2>
+          <button type="button" class="btn btn-primary btn-sm" onclick="addRow()">➕ Thêm dòng</button>
+        </div>
+        <div class="table-wrapper">
+          <table class="items-table" id="itemsTable">
+            <thead>
+              <tr>
+                <th style="width:40px">STT</th>
+                <th>Hàng hóa <span class="required">*</span></th>
+                <th style="width:100px">ĐVT</th>
+                <th style="width:120px">SL chứng từ</th>
+                <th style="width:120px">SL thực nhập <span class="required">*</span></th>
+                <th style="width:130px">Đơn giá <span class="required">*</span></th>
+                <th style="width:140px">Thành tiền</th>
+                <th style="width:44px"></th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+        <div class="total-section">
+          <span class="total-label">Tổng cộng:</span>
+          <span class="total-amount" id="grandTotal">0 ₫</span>
+        </div>
+      </div>
+
+      <!-- Tổng tiền bằng chữ -->
+      <div class="card">
+        <div class="card-header"><h2>💰 Tổng kết</h2></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Tổng số tiền (viết bằng chữ)</label>
+            <input type="text" class="form-control" id="tongSoTienChu" placeholder="VD: Mười bảy triệu đồng chẵn">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số chứng từ gốc kèm theo</label>
+            <input type="text" class="form-control" id="soChungTuGoc" placeholder="VD: 01 hóa đơn GTGT, 01 phiếu giao hàng">
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:12px;justify-content:flex-end;margin-bottom:40px">
+        <a href="/" class="btn btn-outline">← Quay lại</a>
+        <button type="submit" class="btn btn-success" id="submitBtn">💾 Lưu phiếu nhập kho</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="/js/create.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh mục - Quản lý Tồn kho</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <div class="logo-icon">📦</div>
+        <div><div class="brand-text">VIMES Warehouse</div><div class="brand-sub">Quản lý tồn kho</div></div>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="/">📋 Danh sách</a></li>
+        <li><a href="/create">➕ Tạo phiếu</a></li>
+        <li><a href="/danh-muc" class="active">📂 Danh mục</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Quản lý Danh mục</h1>
+      <p>Quản lý đơn vị, người dùng, hàng hóa</p>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:24px">
+      <button class="btn btn-primary btn-sm tab-btn active" onclick="switchTab('donvi',this)">🏢 Đơn vị</button>
+      <button class="btn btn-outline btn-sm tab-btn" onclick="switchTab('nguoidung',this)">👤 Người dùng</button>
+      <button class="btn btn-outline btn-sm tab-btn" onclick="switchTab('hanghoa',this)">📦 Hàng hóa</button>
+    </div>
+
+    <!-- Tab: Đơn vị -->
+    <div class="tab-panel" id="tab-donvi">
+      <div class="card">
+        <div class="card-header">
+          <h2>🏢 Danh sách Đơn vị</h2>
+        </div>
+        <!-- Add form -->
+        <div style="display:flex;gap:8px;padding:16px 24px;background:var(--bg-glass);border-bottom:1px solid var(--border-color);flex-wrap:wrap;align-items:flex-end">
+          <div style="flex:1;min-width:200px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">Tên đơn vị *</label>
+            <input type="text" class="form-control" id="dv_ten" placeholder="Tên đơn vị" style="padding:9px 12px;font-size:13px">
+          </div>
+          <div style="flex:1;min-width:200px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">Bộ phận</label>
+            <input type="text" class="form-control" id="dv_bophan" placeholder="Bộ phận" style="padding:9px 12px;font-size:13px">
+          </div>
+          <button class="btn btn-success btn-sm" onclick="addDonVi()">➕ Thêm</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>ID</th><th>Tên đơn vị</th><th>Bộ phận</th></tr></thead>
+            <tbody id="donViBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Người dùng -->
+    <div class="tab-panel" id="tab-nguoidung" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <h2>👤 Danh sách Người dùng</h2>
+        </div>
+        <div style="display:flex;gap:8px;padding:16px 24px;background:var(--bg-glass);border-bottom:1px solid var(--border-color);flex-wrap:wrap;align-items:flex-end">
+          <div style="flex:1;min-width:160px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">Họ tên *</label>
+            <input type="text" class="form-control" id="nd_hoten" placeholder="Họ tên" style="padding:9px 12px;font-size:13px">
+          </div>
+          <div style="flex:1;min-width:160px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">Chức vụ</label>
+            <input type="text" class="form-control" id="nd_chucvu" placeholder="Chức vụ" style="padding:9px 12px;font-size:13px">
+          </div>
+          <div style="flex:1;min-width:140px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">SĐT</label>
+            <input type="text" class="form-control" id="nd_sdt" placeholder="SĐT" style="padding:9px 12px;font-size:13px">
+          </div>
+          <button class="btn btn-success btn-sm" onclick="addNguoiDung()">➕ Thêm</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>ID</th><th>Họ tên</th><th>Chức vụ</th><th>SĐT</th></tr></thead>
+            <tbody id="nguoiDungBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Hàng hóa -->
+    <div class="tab-panel" id="tab-hanghoa" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <h2>📦 Danh sách Hàng hóa</h2>
+        </div>
+        <div style="display:flex;gap:8px;padding:16px 24px;background:var(--bg-glass);border-bottom:1px solid var(--border-color);flex-wrap:wrap;align-items:flex-end">
+          <div style="flex:1;min-width:160px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">Tên hàng *</label>
+            <input type="text" class="form-control" id="hh_ten" placeholder="Tên hàng" style="padding:9px 12px;font-size:13px">
+          </div>
+          <div style="flex:1;min-width:100px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">Mã số</label>
+            <input type="text" class="form-control" id="hh_maso" placeholder="Mã số" style="padding:9px 12px;font-size:13px">
+          </div>
+          <div style="flex:1;min-width:100px">
+            <label class="form-label" style="margin-bottom:4px;font-size:11px">ĐVT</label>
+            <input type="text" class="form-control" id="hh_dvt" placeholder="ĐVT" style="padding:9px 12px;font-size:13px">
+          </div>
+          <button class="btn btn-success btn-sm" onclick="addHangHoa()">➕ Thêm</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>ID</th><th>Tên hàng</th><th>Mã số</th><th>ĐVT</th></tr></thead>
+            <tbody id="hangHoaBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="/js/danh-muc.js"></script>
+</body>
+</html>

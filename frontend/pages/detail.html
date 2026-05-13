@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết Phiếu Nhập Kho</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <div class="logo-icon">📦</div>
+        <div><div class="brand-text">VIMES Warehouse</div><div class="brand-sub">Quản lý tồn kho</div></div>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="/">📋 Danh sách</a></li>
+        <li><a href="/create">➕ Tạo phiếu</a></li>
+        <li><a href="/danh-muc">📂 Danh mục</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+        <div>
+          <h1 id="receiptTitle">Chi tiết Phiếu Nhập Kho</h1>
+          <p id="receiptSub">Đang tải...</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-success btn-sm" id="confirmBtn" onclick="updateTrangThai('da_duyet')" style="display:none">✅ Duyệt phiếu</button>
+          <button class="btn btn-outline btn-sm" id="cancelBtn" onclick="updateTrangThai('da_huy')" style="display:none">❌ Hủy phiếu</button>
+          <button class="btn btn-danger btn-sm" id="deleteBtn" onclick="deleteReceipt()" style="display:none">🗑️ Xóa</button>
+          <a href="/" class="btn btn-outline btn-sm">← Quay lại</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thông tin đơn vị -->
+    <div class="card">
+      <div class="card-header"><h2>🏢 Thông tin phiếu</h2><span class="badge" id="statusBadge"></span></div>
+      <div class="card-body">
+        <div class="detail-meta" id="metaGrid"></div>
+      </div>
+    </div>
+
+    <!-- Chi tiết hàng hóa -->
+    <div class="card">
+      <div class="card-header"><h2>📦 Chi tiết hàng hóa nhập kho</h2></div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Tên hàng hóa</th>
+              <th>Mã số</th>
+              <th>ĐVT</th>
+              <th>SL chứng từ</th>
+              <th>SL thực nhập</th>
+              <th>Đơn giá</th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody id="itemsBody"></tbody>
+        </table>
+      </div>
+      <div class="total-section">
+        <span class="total-label">Tổng cộng:</span>
+        <span class="total-amount" id="totalAmount">0 ₫</span>
+      </div>
+    </div>
+
+    <!-- Tổng kết -->
+    <div class="card" id="summaryCard" style="display:none">
+      <div class="card-header"><h2>💰 Tổng kết</h2></div>
+      <div class="card-body">
+        <div class="detail-meta">
+          <div class="meta-item" style="grid-column:1/-1">
+            <div class="meta-label">Tổng số tiền (bằng chữ)</div>
+            <div class="meta-value" id="tongTienChu">—</div>
+          </div>
+          <div class="meta-item" style="grid-column:1/-1" id="chungTuGocWrap">
+            <div class="meta-label">Số chứng từ gốc kèm theo</div>
+            <div class="meta-value" id="soChungTuGoc">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chữ ký -->
+    <div class="card" id="signatureCard" style="display:none">
+      <div class="card-header"><h2>✍️ Chữ ký</h2></div>
+      <div class="card-body" style="padding:0">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center">
+          <div style="padding:20px;border-right:1px solid var(--border-color)">
+            <div style="font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Người lập phiếu</div>
+            <div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:40px">(Ký, họ tên)</div>
+            <div style="font-size:14px;font-weight:600" id="sigNguoiLap">—</div>
+          </div>
+          <div style="padding:20px;border-right:1px solid var(--border-color)">
+            <div style="font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Người giao hàng</div>
+            <div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:40px">(Ký, họ tên)</div>
+            <div style="font-size:14px;font-weight:600" id="sigNguoiGiao">—</div>
+          </div>
+          <div style="padding:20px;border-right:1px solid var(--border-color)">
+            <div style="font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Thủ kho</div>
+            <div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:40px">(Ký, họ tên)</div>
+            <div style="font-size:14px;font-weight:600" id="sigThuKho">—</div>
+          </div>
+          <div style="padding:20px">
+            <div style="font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Kế toán trưởng</div>
+            <div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:40px">(Ký, họ tên)</div>
+            <div style="font-size:14px;font-weight:600" id="sigKeToan">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="/js/detail.js"></script>
+</body>
+</html>
