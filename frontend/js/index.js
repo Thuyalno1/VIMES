@@ -48,18 +48,36 @@ async function loadReceipts() {
   }
 }
 
-function renderTable(receipts) {
+let currentFilteredReceipts = [];
+let currentPage = 1;
+const itemsPerPage = 3;
+
+function renderTablePage() {
   const tbody = document.getElementById('receiptsBody');
   const empty = document.getElementById('emptyState');
+  const paginationContainer = document.getElementById('paginationContainer');
 
-  if (!receipts || receipts.length === 0) {
+  if (!currentFilteredReceipts || currentFilteredReceipts.length === 0) {
     tbody.innerHTML = '';
     empty.style.display = 'block';
+    paginationContainer.style.display = 'none';
     return;
   }
 
   empty.style.display = 'none';
-  tbody.innerHTML = receipts.map(r => `
+  
+  const totalItems = currentFilteredReceipts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  if (currentPage < 1) currentPage = 1;
+  if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+  
+  const pageItems = currentFilteredReceipts.slice(startIndex, endIndex);
+
+  tbody.innerHTML = pageItems.map(r => `
     <tr>
       <td class="receipt-number"><a href="/detail/${r.id}" style="color:inherit;text-decoration:none">${r.so_phieu}</a></td>
       <td>${formatDate(r.ngay_lap)}</td>
@@ -76,6 +94,29 @@ function renderTable(receipts) {
       </td>
     </tr>
   `).join('');
+
+  if (totalPages > 1) {
+    paginationContainer.style.display = 'flex';
+    document.getElementById('paginationInfo').textContent = `Hiển thị ${startIndex + 1}-${endIndex} trong tổng số ${totalItems} phiếu`;
+    
+    let buttonsHtml = '';
+    buttonsHtml += `<button class="btn btn-outline btn-sm" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Trước</button>`;
+    
+    for (let i = 1; i <= totalPages; i++) {
+      buttonsHtml += `<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline'}" onclick="goToPage(${i})">${i}</button>`;
+    }
+    
+    buttonsHtml += `<button class="btn btn-outline btn-sm" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Sau</button>`;
+    
+    document.getElementById('paginationControls').innerHTML = buttonsHtml;
+  } else {
+    paginationContainer.style.display = 'none';
+  }
+}
+
+function goToPage(page) {
+  currentPage = page;
+  renderTablePage();
 }
 
 function updateStats(receipts) {
@@ -104,7 +145,7 @@ function applyFilters() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const templateVal = document.getElementById('templateFilter').value;
   
-  const filtered = allReceipts.filter(r => {
+  currentFilteredReceipts = allReceipts.filter(r => {
     // 1. Filter by status
     let matchesStatus = true;
     if (currentFilterStatus === 'nhap') matchesStatus = r.trang_thai === 'nhap';
@@ -129,7 +170,8 @@ function applyFilters() {
     return matchesStatus && matchesTemplate && matchesSearch;
   });
   
-  renderTable(filtered);
+  currentPage = 1; // Reset to first page whenever filters change
+  renderTablePage();
 }
 
 // Events

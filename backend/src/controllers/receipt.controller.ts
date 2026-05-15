@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { ReceiptService } from '../services/receipt.service';
-import { DonViModel } from '../models/donVi.model';
-import { NguoiDungModel } from '../models/nguoiDung.model';
-import { HangHoaModel } from '../models/hangHoa.model';
+import { DonViService } from '../services/donVi.service';
+import { NguoiDungService } from '../services/nguoiDung.service';
+import { HangHoaService } from '../services/hangHoa.service';
 import { IApiResponse, IPhieuNhapKho, IDonVi, INguoiDung, IHangHoa } from '../interfaces/receipt.interface';
 
 export class ReceiptController {
@@ -181,7 +181,7 @@ export class ReceiptController {
 
   static async getAllDonVi(req: Request, res: Response): Promise<void> {
     try {
-      const data = await DonViModel.findAll();
+      const data = await DonViService.getAllDonVi();
       res.json({ success: true, message: 'OK', data } as IApiResponse<IDonVi[]>);
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message } as IApiResponse<null>);
@@ -195,7 +195,7 @@ export class ReceiptController {
         res.status(400).json({ success: false, message: 'Tên đơn vị là bắt buộc' } as IApiResponse<null>);
         return;
       }
-      const data = await DonViModel.create({ ten_don_vi, bo_phan });
+      const data = await DonViService.createDonVi({ ten_don_vi, bo_phan });
       res.status(201).json({ success: true, message: 'Thêm đơn vị thành công!', data } as IApiResponse<IDonVi>);
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message } as IApiResponse<null>);
@@ -206,7 +206,7 @@ export class ReceiptController {
 
   static async getAllNguoiDung(req: Request, res: Response): Promise<void> {
     try {
-      const data = await NguoiDungModel.findAll();
+      const data = await NguoiDungService.getAllNguoiDung();
       res.json({ success: true, message: 'OK', data } as IApiResponse<INguoiDung[]>);
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message } as IApiResponse<null>);
@@ -220,7 +220,7 @@ export class ReceiptController {
         res.status(400).json({ success: false, message: 'Họ tên là bắt buộc' } as IApiResponse<null>);
         return;
       }
-      const data = await NguoiDungModel.create({ ho_ten, chuc_vu, so_dien_thoai, email });
+      const data = await NguoiDungService.createNguoiDung({ ho_ten, chuc_vu, so_dien_thoai, email });
       res.status(201).json({ success: true, message: 'Thêm người dùng thành công!', data } as IApiResponse<INguoiDung>);
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message } as IApiResponse<null>);
@@ -231,7 +231,7 @@ export class ReceiptController {
 
   static async getAllHangHoa(req: Request, res: Response): Promise<void> {
     try {
-      const data = await HangHoaModel.findAll();
+      const data = await HangHoaService.getAllHangHoa();
       res.json({ success: true, message: 'OK', data } as IApiResponse<IHangHoa[]>);
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message } as IApiResponse<null>);
@@ -245,7 +245,7 @@ export class ReceiptController {
         res.status(400).json({ success: false, message: 'Tên hàng hóa là bắt buộc' } as IApiResponse<null>);
         return;
       }
-      const data = await HangHoaModel.create({ ten_hang, nhan_hieu, quy_cach_pham_chat, ma_so, don_vi_tinh });
+      const data = await HangHoaService.createHangHoa({ ten_hang, nhan_hieu, quy_cach_pham_chat, ma_so, don_vi_tinh });
       res.status(201).json({ success: true, message: 'Thêm hàng hóa thành công!', data } as IApiResponse<IHangHoa>);
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message } as IApiResponse<null>);
