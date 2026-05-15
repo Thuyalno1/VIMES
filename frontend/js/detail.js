@@ -49,6 +49,8 @@ function renderDetail(r) {
   if (r.trang_thai === 'nhap') {
     document.getElementById('confirmBtn').style.display = '';
     document.getElementById('cancelBtn').style.display = '';
+    document.getElementById('editBtn').style.display = '';
+    document.getElementById('editBtn').href = '/edit/' + r.id;
   }
   document.getElementById('deleteBtn').style.display = '';
 

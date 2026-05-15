@@ -31,6 +31,10 @@ app.get('/detail/:id', (req, res) => {
   res.sendFile(path.join(frontendPath, 'pages', 'detail.html'));
 });
 
+app.get('/edit/:id', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'pages', 'create.html'));
+});
+
 app.get('/danh-muc', (req, res) => {
   res.sendFile(path.join(frontendPath, 'pages', 'danh-muc.html'));
 });

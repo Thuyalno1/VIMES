@@ -61,6 +61,65 @@ export class ReceiptService {
       client.release();
     }
   }
+  // Cập nhật phiếu nhập kho (với transaction)
+  static async updatePhieuNhap(id: number, data: ICreatePhieuNhapRequest): Promise<IPhieuNhapKho> {
+    const client = await pool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      // 1. Tính tổng tiền
+      const tongSoTien = data.chi_tiet.reduce((sum, item) => {
+        const thucNhap = item.so_luong_thuc_nhap || 0;
+        const donGia = item.don_gia || 0;
+        return sum + (thucNhap * donGia);
+      }, 0);
+
+      // 2. Cập nhật phiếu nhập kho
+      const phieu = await PhieuNhapKhoModel.update(id, {
+        ngay_lap: data.ngay_lap,
+        no: data.no,
+        co: data.co,
+        chung_tu_so: data.chung_tu_so,
+        ngay_chung_tu: data.ngay_chung_tu,
+        nhap_tai_kho: data.nhap_tai_kho,
+        dia_diem: data.dia_diem,
+        tong_so_tien: tongSoTien,
+        tong_so_tien_chu: data.tong_so_tien_chu,
+        so_chung_tu_goc: data.so_chung_tu_goc,
+        don_vi_id: data.don_vi_id,
+        nguoi_lap_id: data.nguoi_lap_id,
+        nguoi_giao_id: data.nguoi_giao_id,
+        thu_kho_id: data.thu_kho_id,
+        ke_toan_id: data.ke_toan_id,
+      });
+
+      if (!phieu) {
+        throw new Error('Không tìm thấy phiếu nhập kho');
+      }
+
+      // 3. Xóa chi tiết cũ
+      await ChiTietPhieuNhapModel.deleteByPhieuNhapId(id);
+
+      // 4. Tạo các dòng chi tiết mới (tính lại thành tiền)
+      const chiTietWithTotal = data.chi_tiet.map((item, index) => ({
+        ...item,
+        stt: index + 1,
+        thanh_tien: (item.so_luong_thuc_nhap || 0) * (item.don_gia || 0),
+      }));
+
+      const createdItems = await ChiTietPhieuNhapModel.createMany(id, chiTietWithTotal);
+
+      await client.query('COMMIT');
+
+      return { ...phieu, chi_tiet: createdItems, tong_so_tien: tongSoTien };
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
 
   // Lấy danh sách phiếu nhập kho
   static async getAllPhieuNhap(): Promise<IPhieuNhapKho[]> {

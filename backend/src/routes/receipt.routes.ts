@@ -8,6 +8,7 @@ router.post('/phieu-nhap', ReceiptController.createPhieuNhap);
 router.get('/phieu-nhap', ReceiptController.getAllPhieuNhap);
 router.get('/phieu-nhap/:id', ReceiptController.getPhieuNhapById);
 router.delete('/phieu-nhap/:id', ReceiptController.deletePhieuNhap);
+router.put('/phieu-nhap/:id', ReceiptController.updatePhieuNhap);
 router.patch('/phieu-nhap/:id/trang-thai', ReceiptController.updateTrangThai);
 
 // ===== Danh mục Đơn vị =====

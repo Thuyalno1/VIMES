@@ -8,16 +8,16 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT || '5432'),
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || '123456',
-  database: process.env.DB_NAME || 'vimes_warehouse_db',
+  database: process.env.DB_NAME || 'vinmec_hospital_db',
 });
 
 // Test kết nối
 pool.on('connect', () => {
-  console.log('✅ Kết nối PostgreSQL thành công!');
+  console.log(' Kết nối PostgreSQL thành công!');
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Lỗi kết nối PostgreSQL:', err);
+  console.error(' Lỗi kết nối PostgreSQL:', err);
 });
 
 export default pool;

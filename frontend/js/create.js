@@ -1,7 +1,11 @@
-// ===== create.js — Tạo phiếu nhập kho (Mẫu 01-VT) =====
+// ===== create.js — Tạo/Sửa phiếu nhập kho (Mẫu 01-VT) =====
 const API = '/api';
 let rowCount = 0;
 let hangHoaList = [];
+
+const pathParts = window.location.pathname.split('/').filter(p => p);
+const isEditMode = pathParts[0] === 'edit';
+const receiptId = isEditMode ? parseInt(pathParts[1]) : null;
 
 function formatMoney(amount) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
@@ -190,15 +194,18 @@ document.getElementById('receiptForm').addEventListener('submit', async (e) => {
   btn.innerHTML = '<span class="spinner"></span> Đang lưu...';
 
   try {
-    const res = await fetch(`${API}/phieu-nhap`, {
-      method: 'POST',
+    const url = isEditMode ? `${API}/phieu-nhap/${receiptId}` : `${API}/phieu-nhap`;
+    const method = isEditMode ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     const json = await res.json();
     if (json.success) {
-      showToast('Tạo phiếu nhập kho thành công!');
-      setTimeout(() => window.location.href = `/detail/${json.data.id}`, 1500);
+      showToast(isEditMode ? 'Cập nhật phiếu nhập kho thành công!' : 'Tạo phiếu nhập kho thành công!');
+      setTimeout(() => window.location.href = `/detail/${json.data.id || receiptId}`, 1500);
     } else {
       showToast(json.message, 'error');
       btn.disabled = false; btn.innerHTML = '💾 Lưu phiếu nhập kho';
@@ -209,9 +216,63 @@ document.getElementById('receiptForm').addEventListener('submit', async (e) => {
   }
 });
 
+async function loadReceiptData(id) {
+  try {
+    const res = await fetch(`${API}/phieu-nhap/${id}`);
+    const json = await res.json();
+    if (!json.success || !json.data) {
+      showToast('Không tìm thấy phiếu nhập kho!', 'error');
+      return;
+    }
+    const data = json.data;
+    
+    // Fill form
+    if (data.ngay_lap) document.getElementById('ngayLap').value = data.ngay_lap.split('T')[0];
+    if (data.don_vi_id) document.getElementById('donViId').value = data.don_vi_id;
+    if (data.no) document.getElementById('tkNo').value = data.no;
+    if (data.co) document.getElementById('tkCo').value = data.co;
+    if (data.nhap_tai_kho) document.getElementById('nhapTaiKho').value = data.nhap_tai_kho;
+    if (data.dia_diem) document.getElementById('diaDiem').value = data.dia_diem;
+    if (data.chung_tu_so) document.getElementById('chungTuSo').value = data.chung_tu_so;
+    if (data.ngay_chung_tu) document.getElementById('ngayChungTu').value = data.ngay_chung_tu.split('T')[0];
+    if (data.nguoi_lap_id) document.getElementById('nguoiLapId').value = data.nguoi_lap_id;
+    if (data.nguoi_giao_id) document.getElementById('nguoiGiaoId').value = data.nguoi_giao_id;
+    if (data.thu_kho_id) document.getElementById('thuKhoId').value = data.thu_kho_id;
+    if (data.ke_toan_id) document.getElementById('keToanId').value = data.ke_toan_id;
+    if (data.tong_so_tien_chu) document.getElementById('tongSoTienChu').value = data.tong_so_tien_chu;
+    if (data.so_chung_tu_goc) document.getElementById('soChungTuGoc').value = data.so_chung_tu_goc;
+    
+    // Load chi tiết
+    if (data.chi_tiet && data.chi_tiet.length > 0) {
+      data.chi_tiet.forEach(item => {
+        addRow();
+        const tr = document.getElementById(`row-${rowCount}`);
+        tr.querySelector('.item-hanghoa').value = item.hang_hoa_id;
+        const opt = tr.querySelector('.item-hanghoa').options[tr.querySelector('.item-hanghoa').selectedIndex];
+        if (opt) tr.querySelector('.item-dvt').value = opt.getAttribute('data-dvt') || '';
+        
+        tr.querySelector('.item-sl-ct').value = item.so_luong_chung_tu;
+        tr.querySelector('.item-sl-tn').value = item.so_luong_thuc_nhap;
+        tr.querySelector('.item-dongia').value = item.don_gia;
+        calcRow(tr.querySelector('.item-sl-tn'));
+      });
+    } else {
+      addRow();
+    }
+  } catch (err) {
+    showToast('Lỗi tải dữ liệu: ' + err.message, 'error');
+  }
+}
+
 // Init
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('ngayLap').valueAsDate = new Date();
   await loadDanhMuc();
-  addRow(); // Thêm 1 dòng mặc định
+  
+  if (isEditMode && receiptId) {
+    document.querySelector('.page-header h1').textContent = 'Sửa Phiếu Nhập Kho';
+    await loadReceiptData(receiptId);
+  } else {
+    addRow(); // Thêm 1 dòng mặc định
+  }
 });

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1778811569859" clover="3.2.0">
+  <project timestamp="1778811569859" name="All files">
+    <metrics statements="56" coveredstatements="36" conditionals="60" coveredconditionals="18" methods="18" coveredmethods="14" elements="134" coveredelements="68" complexity="0" loc="56" ncloc="56" packages="1" files="4" classes="4"/>
+    <file name="donVi.model.ts" path="D:\VIMES\warehouse-receipt-app\backend\src\models\donVi.model.ts">
+      <metrics statements="8" coveredstatements="8" conditionals="4" coveredconditionals="3" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="11" count="2" type="stmt"/>
+      <line num="12" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+    </file>
+    <file name="hangHoa.model.ts" path="D:\VIMES\warehouse-receipt-app\backend\src\models\hangHoa.model.ts">
+      <metrics statements="8" coveredstatements="8" conditionals="10" coveredconditionals="6" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="11" count="2" type="stmt"/>
+      <line num="12" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="21" count="1" type="stmt"/>
+    </file>
+    <file name="nguoiDung.model.ts" path="D:\VIMES\warehouse-receipt-app\backend\src\models\nguoiDung.model.ts">
+      <metrics statements="8" coveredstatements="8" conditionals="8" coveredconditionals="5" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="11" count="2" type="stmt"/>
+      <line num="12" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+    </file>
+    <file name="receipt.model.ts" path="D:\VIMES\warehouse-receipt-app\backend\src\models\receipt.model.ts">
+      <metrics statements="32" coveredstatements="12" conditionals="38" coveredconditionals="4" methods="9" coveredmethods="5"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="7" count="0" type="stmt"/>
+      <line num="18" count="0" type="stmt"/>
+      <line num="37" count="0" type="stmt"/>
+      <line num="38" count="0" type="stmt"/>
+      <line num="42" count="0" type="stmt"/>
+      <line num="63" count="0" type="stmt"/>
+      <line num="69" count="0" type="stmt"/>
+      <line num="70" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="71" count="0" type="stmt"/>
+      <line num="76" count="1" type="stmt"/>
+      <line num="91" count="1" type="stmt"/>
+      <line num="92" count="1" type="stmt"/>
+      <line num="97" count="2" type="stmt"/>
+      <line num="112" count="2" type="stmt"/>
+      <line num="113" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="114" count="1" type="stmt"/>
+      <line num="119" count="0" type="stmt"/>
+      <line num="127" count="1" type="stmt"/>
+      <line num="135" count="2" type="stmt"/>
+      <line num="136" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="141" count="0" type="stmt"/>
+      <line num="142" count="0" type="stmt"/>
+      <line num="143" count="0" type="stmt"/>
+      <line num="145" count="0" type="stmt"/>
+      <line num="150" count="0" type="stmt"/>
+      <line num="151" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="152" count="0" type="stmt"/>
+      <line num="153" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="154" count="0" type="stmt"/>
+      <line num="157" count="0" type="stmt"/>
+    </file>
+  </project>
+</coverage>

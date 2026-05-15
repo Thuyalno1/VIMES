@@ -40,8 +40,8 @@ async function loadReceipts() {
     const json = await res.json();
     if (json.success) {
       allReceipts = json.data;
-      renderTable(allReceipts);
       updateStats(allReceipts);
+      filterByStatus('all'); // This applies filter, renders table and sets the initial visual state
     }
   } catch (err) {
     showToast('Không thể tải danh sách: ' + err.message, 'error');
@@ -84,17 +84,57 @@ function updateStats(receipts) {
   document.getElementById('statDuyet').textContent = receipts.filter(r => r.trang_thai === 'da_duyet').length;
 }
 
-// Tìm kiếm
-document.getElementById('searchInput').addEventListener('input', function () {
-  const q = this.value.toLowerCase();
-  const filtered = allReceipts.filter(r =>
-    (r.so_phieu || '').toLowerCase().includes(q) ||
-    (r.ten_don_vi || '').toLowerCase().includes(q) ||
-    (r.nhap_tai_kho || '').toLowerCase().includes(q) ||
-    (r.bo_phan || '').toLowerCase().includes(q)
-  );
+let currentFilterStatus = 'all';
+
+function filterByStatus(status) {
+  currentFilterStatus = status;
+  applyFilters();
+  
+  // Highlight active filter card
+  document.querySelectorAll('.stat-card').forEach(card => {
+    card.style.border = 'none';
+  });
+  const cards = document.querySelectorAll('.stat-card');
+  if (status === 'all' && cards[0]) cards[0].style.border = '2px solid var(--primary)';
+  else if (status === 'nhap' && cards[1]) cards[1].style.border = '2px solid var(--primary)';
+  else if (status === 'da_duyet' && cards[2]) cards[2].style.border = '2px solid var(--primary)';
+}
+
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const templateVal = document.getElementById('templateFilter').value;
+  
+  const filtered = allReceipts.filter(r => {
+    // 1. Filter by status
+    let matchesStatus = true;
+    if (currentFilterStatus === 'nhap') matchesStatus = r.trang_thai === 'nhap';
+    else if (currentFilterStatus === 'da_duyet') matchesStatus = r.trang_thai === 'da_duyet';
+    
+    // 2. Filter by template (currently all receipts in DB are assumed to be 01-VT)
+    let matchesTemplate = true;
+    if (templateVal !== 'all') {
+      // If we later add 'mau_phieu' field, it would be checked here: r.mau_phieu === templateVal
+      matchesTemplate = (templateVal === '01-VT');
+    }
+
+    // 3. Filter by search query
+    let matchesSearch = true;
+    if (q) {
+      matchesSearch = (r.so_phieu || '').toLowerCase().includes(q) ||
+        (r.ten_don_vi || '').toLowerCase().includes(q) ||
+        (r.nhap_tai_kho || '').toLowerCase().includes(q) ||
+        (r.bo_phan || '').toLowerCase().includes(q);
+    }
+    
+    return matchesStatus && matchesTemplate && matchesSearch;
+  });
+  
   renderTable(filtered);
-});
+}
+
+// Events
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('templateFilter').addEventListener('change', applyFilters);
 
 // Delete modal
 function openDeleteModal(id) {

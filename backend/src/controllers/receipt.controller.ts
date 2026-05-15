@@ -45,6 +45,49 @@ export class ReceiptController {
     }
   }
 
+  // PUT /api/phieu-nhap/:id — Cập nhật phiếu nhập kho
+  static async updatePhieuNhap(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        res.status(400).json({ success: false, message: 'ID không hợp lệ' } as IApiResponse<null>);
+        return;
+      }
+
+      const { ngay_lap, don_vi_id, chi_tiet } = req.body;
+
+      if (!ngay_lap || !don_vi_id) {
+        res.status(400).json({
+          success: false,
+          message: 'Vui lòng điền đầy đủ: ngày lập, đơn vị',
+        } as IApiResponse<null>);
+        return;
+      }
+
+      if (!chi_tiet || chi_tiet.length === 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Phiếu nhập kho phải có ít nhất 1 dòng hàng',
+        } as IApiResponse<null>);
+        return;
+      }
+
+      const phieu = await ReceiptService.updatePhieuNhap(id, req.body);
+
+      res.status(200).json({
+        success: true,
+        message: 'Cập nhật phiếu nhập kho thành công!',
+        data: phieu,
+      } as IApiResponse<IPhieuNhapKho>);
+    } catch (error: any) {
+      console.error('Lỗi cập nhật phiếu:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Lỗi server: ' + error.message,
+      } as IApiResponse<null>);
+    }
+  }
+
   // GET /api/phieu-nhap — Lấy danh sách
   static async getAllPhieuNhap(req: Request, res: Response): Promise<void> {
     try {

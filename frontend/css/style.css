@@ -492,6 +492,11 @@ td.amount {
   color: var(--text-muted);
 }
 
+select.form-control option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
 textarea.form-control {
   resize: vertical;
   min-height: 80px;

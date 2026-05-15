@@ -37,6 +37,39 @@ export class PhieuNhapKhoModel {
     const result = await pool.query(query, values);
     return { ...result.rows[0], chi_tiet: [] };
   }
+  // Cập nhật phiếu nhập kho
+  static async update(id: number, data: Partial<IPhieuNhapKho>): Promise<IPhieuNhapKho | null> {
+    const query = `
+      UPDATE phieu_nhap_kho SET
+        ngay_lap = COALESCE($1, ngay_lap),
+        no = COALESCE($2, no),
+        co = COALESCE($3, co),
+        chung_tu_so = COALESCE($4, chung_tu_so),
+        ngay_chung_tu = COALESCE($5, ngay_chung_tu),
+        nhap_tai_kho = COALESCE($6, nhap_tai_kho),
+        dia_diem = COALESCE($7, dia_diem),
+        tong_so_tien = COALESCE($8, tong_so_tien),
+        tong_so_tien_chu = COALESCE($9, tong_so_tien_chu),
+        so_chung_tu_goc = COALESCE($10, so_chung_tu_goc),
+        don_vi_id = COALESCE($11, don_vi_id),
+        nguoi_lap_id = COALESCE($12, nguoi_lap_id),
+        nguoi_giao_id = COALESCE($13, nguoi_giao_id),
+        thu_kho_id = COALESCE($14, thu_kho_id),
+        ke_toan_id = COALESCE($15, ke_toan_id),
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $16
+      RETURNING *
+    `;
+    const values = [
+      data.ngay_lap, data.no, data.co, data.chung_tu_so, data.ngay_chung_tu,
+      data.nhap_tai_kho, data.dia_diem, data.tong_so_tien, data.tong_so_tien_chu,
+      data.so_chung_tu_goc, data.don_vi_id, data.nguoi_lap_id, data.nguoi_giao_id,
+      data.thu_kho_id, data.ke_toan_id, id
+    ];
+    const result = await pool.query(query, values);
+    if (result.rows.length === 0) return null;
+    return { ...result.rows[0], chi_tiet: [] };
+  }
 
   // Lấy danh sách phiếu nhập kho (kèm JOIN thông tin)
   static async findAll(): Promise<IPhieuNhapKho[]> {
